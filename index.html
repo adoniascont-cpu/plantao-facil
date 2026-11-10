@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#153b35">
+<title>Plantão Fácil | Demonstração</title>
+<style>
+:root{--green:#153b35;--mint:#e7f2ed;--bg:#f4f7f5;--line:#dce5df;--text:#1d2924;--muted:#64736b;--white:#fff;--orange:#fff2dc;--red:#fde9e7}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{background:var(--green);color:white;padding:20px max(18px,calc((100% - 1050px)/2));display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{font-size:22px;font-weight:800}.sub{font-size:12px;opacity:.8}.demo{font-size:11px;border:1px solid #ffffff55;padding:6px 9px;border-radius:20px}
+main{max-width:1050px;margin:22px auto;padding:0 15px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}.card{background:white;border:1px solid var(--line);border-radius:13px;padding:15px;box-shadow:0 2px 8px #153b3508}.statlabel{font-size:12px;color:var(--muted)}.statnum{font-size:27px;font-weight:750;margin-top:3px}
+nav{display:flex;gap:5px;overflow:auto;margin:14px 0;padding:4px 0}nav button,.btn{border:1px solid var(--line);background:white;color:var(--text);padding:9px 13px;border-radius:9px;font-weight:600;cursor:pointer;white-space:nowrap}nav button.active,.primary{background:var(--green);border-color:var(--green);color:white}
+section{display:none}section.active{display:block}.row{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.muted{color:var(--muted);font-size:13px}.stack{display:grid;gap:12px}.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+label{display:block;font-size:12px;color:var(--muted);margin:8px 0 4px}input,select{width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;background:white;color:var(--text);font:inherit}
+button:disabled{opacity:.45;cursor:not-allowed}.person{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);gap:10px}.person:last-child{border:0}
+.calendar{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}.weekday{text-align:center;color:var(--muted);font-size:11px;padding:5px}.day{border:1px solid var(--line);background:#fff;border-radius:8px;min-height:82px;padding:5px;text-align:left;overflow:hidden;cursor:pointer}.day.chosen{outline:2px solid var(--green)}.daynum{font-weight:750;font-size:12px}.tag{display:block;background:var(--mint);border-radius:4px;padding:2px 4px;font-size:10px;margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pill{display:inline-block;border-radius:20px;background:var(--mint);padding:4px 9px;font-size:11px}.notice{padding:11px;border-radius:9px;background:var(--mint);font-size:13px;margin-top:10px}.warning{background:var(--orange)}.danger{background:var(--red)}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.hidden{display:none!important}
+@media(max-width:650px){.stats{grid-template-columns:repeat(2,1fr)}.two{grid-template-columns:1fr}.day{min-height:68px;padding:3px}.tag{font-size:9px}.brand{font-size:20px}main{margin-top:14px}}
+</style>
+</head>
+<body>
+<header><div><div class="brand">🗓️ Plantão Fácil</div><div class="sub">Gestão inteligente de escalas de trabalho</div></div><span class="demo">PROTÓTIPO DEMONSTRATIVO</span></header>
+<main>
+<div class="stats">
+ <div class="card"><div class="statlabel">Colaboradores</div><div class="statnum" id="nStaff">6</div></div>
+ <div class="card"><div class="statlabel">Alocações na escala</div><div class="statnum" id="nSlots">0</div></div>
+ <div class="card"><div class="statlabel">Vagas descobertas</div><div class="statnum" id="nOpen">0</div></div>
+ <div class="card"><div class="statlabel">Trocas pendentes</div><div class="statnum" id="nSwap">1</div></div>
+</div>
+<nav>
+<button class="active" data-tab="inicio">Visão geral</button><button data-tab="equipe">Colaboradores</button><button data-tab="disp">Disponibilidade</button><button data-tab="escala">Escalas</button><button data-tab="trocas">Trocas</button>
+</nav>
+<section id="inicio" class="active stack">
+ <div class="card"><h2>Bem-vindo à administração</h2><p class="muted">Empresa de demonstração: Clínica Exemplo · Unidade Central</p><p>Gerencie a equipe, colete disponibilidades e monte escalas de forma organizada.</p><div class="actions"><button class="btn primary" data-open="escala">Montar escala</button><button class="btn" data-open="equipe">Cadastrar equipe</button></div></div>
+ <div class="card"><h3>Resumo</h3><div id="summary" class="stack muted"></div></div>
+ <div class="card"><b>Como testar</b><p class="muted">1. Confira os colaboradores. 2. Marque dias indisponíveis. 3. Gere a escala automática. 4. Clique em um dia para editar. 5. Publique e teste uma troca.</p></div>
+</section>
+<section id="equipe" class="stack">
+ <div class="card"><div class="row"><h2>Colaboradores</h2><span class="pill">Cadastro da empresa</span></div><div id="people"></div></div>
+ <div class="card"><h3>Adicionar colaborador</h3><div class="two"><div><label>Nome</label><input id="personName" placeholder="Ex.: Mariana Silva"></div><div><label>Função / cargo</label><input id="personRole" placeholder="Ex.: Enfermeira"></div></div><div class="actions"><button class="btn primary" id="addPerson">Adicionar à equipe</button></div></div>
+</section>
+<section id="disp" class="stack">
+ <div class="card"><h2>Disponibilidade</h2><p class="muted">Registre em quais dias cada pessoa pode ou não trabalhar.</p><div class="two"><div><label>Colaborador</label><select id="availPerson"></select></div><div><label>Dia do mês</label><select id="availDay"></select></div></div><label>Situação</label><select id="availStatus"><option value="yes">Disponível</option><option value="no">Indisponível</option></select><div class="actions"><button class="btn primary" id="saveAvail">Salvar disponibilidade</button></div></div>
+ <div class="card"><h3>Registros informados</h3><div id="availList" class="muted"></div></div>
+</section>
+<section id="escala" class="stack">
+ <div class="card"><h2>Configurar escala</h2><div class="two"><div><label>Mês</label><select id="month"><option value="0">Janeiro</option><option value="1">Fevereiro</option><option value="2">Março</option><option value="3">Abril</option><option value="4">Maio</option><option value="5">Junho</option><option value="6">Julho</option><option value="7">Agosto</option><option value="8">Setembro</option><option value="9">Outubro</option><option value="10" selected>Novembro</option><option value="11">Dezembro</option></select></div><div><label>Ano</label><input type="number" id="year" value="2026"></div><div><label>Profissionais necessários por dia</label><input type="number" id="required" min="1" max="20" value="2"></div><div><label>Turno</label><select id="shiftType"><option>Diurno</option><option>Noturno</option><option>12 horas</option><option>Personalizado</option></select></div></div><div class="actions"><button class="btn primary" id="generate">✨ Gerar escala automaticamente</button></div><div class="notice warning">A geração automática desta demonstração distribui as vagas entre pessoas disponíveis, buscando equilíbrio na quantidade de plantões. Ainda não verifica legislação trabalhista, intervalos ou qualificação profissional.</div></div>
+ <div class="card"><div class="row"><h3>Calendário</h3><span class="pill" id="status">Ainda não gerada</span></div><p class="muted">Selecione um dia para revisar ou alterar os profissionais escalados.</p><div id="calendar" class="calendar"></div></div>
+ <div class="card hidden" id="editor"><h3 id="editTitle">Editar dia</h3><div id="checks"></div><div class="actions"><button class="btn primary" id="saveEdit">Salvar alterações</button></div></div>
+ <div class="card"><div class="actions"><button class="btn" id="csv">Exportar CSV para Excel</button><button class="btn primary" id="publish">Publicar escala</button></div><div id="publishMsg" class="muted" style="margin-top:10px"></div></div>
+</section>
+<section id="trocas" class="stack">
+ <div class="card"><h2>Solicitar troca</h2><p class="muted">Simule um colaborador negociando a troca com outro. O administrador aprova ou recusa.</p><div class="two"><div><label>Quem está cedendo o plantão?</label><select id="swapFrom"></select></div><div><label>Quem receberá?</label><select id="swapTo"></select></div></div><label>Dia do mês</label><select id="swapDay"></select><div class="actions"><button class="btn primary" id="requestSwap">Enviar solicitação</button></div></div>
+ <div class="card"><h3>Solicitações</h3><div id="swapList"></div></div>
+</section>
+<p class="muted" style="text-align:center;padding:15px 0">Demonstração local · Informações fictícias · Não utilizar para escalas reais.</p>
+</main>
+<script>
+(()=>{
+const $=id=>document.getElementById(id);
+let staff=[['Ana Souza','Enfermeira'],['Bruno Lima','Técnico'],['Carla Mendes','Enfermeira'],['Diego Alves','Técnico'],['Elisa Rocha','Enfermeira'],['Felipe Costa','Técnico']].map((p,i)=>({id:i+1,name:p[0],role:p[1]}));
+let availability={},schedule={},swaps=[{id:1,from:2,to:4,day:8,status:'Pendente'}],selectedDay=null,published=false;
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const person=id=>staff.find(p=>p.id===+id);
+const days=()=>new Date(+$('year').value,+$('month').value+1,0).getDate();
+const month=()=> $('month').selectedOptions[0].text;
+function show(tab){document.querySelectorAll('main nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));document.querySelectorAll('main section').forEach(s=>s.classList.toggle('active',s.id===tab));if(tab==='equipe')renderPeople();if(tab==='disp')renderAvailability();if(tab==='escala')renderCalendar();if(tab==='trocas')renderSwaps();}
+document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>show(b.dataset.tab));
+document.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>show(b.dataset.open));
+function fill(id,includeAll=false){let el=$(id),old=el.value;el.innerHTML=staff.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('');if(includeAll)el.insertAdjacentHTML('afterbegin','<option value="all">Todos</option>');if([...el.options].some(o=>o.value===old))el.value=old;}
+function fillDays(id){let el=$(id),old=el.value;el.innerHTML=Array.from({length:days()},(_,i)=>`<option value="${i+1}">Dia ${i+1}</option>`).join('');if(old&&+old<=days())el.value=old;}
+function renderPeople(){$('people').innerHTML=staff.map(p=>`<div class="person"><div><b>${esc(p.name)}</b><div class="muted">${esc(p.role)}</div></div><button class="btn" data-remove="${p.id}">Remover</button></div>`).join('')||'<p class="muted">Nenhum colaborador cadastrado.</p>';['availPerson','swapFrom','swapTo'].forEach(id=>fill(id));}
+$('people').onclick=e=>{let b=e.target.closest('[data-remove]');if(!b)return;staff=staff.filter(p=>p.id!==+b.dataset.remove);Object.keys(schedule).forEach(d=>schedule[d]=schedule[d].filter(id=>id!==+b.dataset.remove));renderPeople();renderCalendar();update();};
+$('addPerson').onclick=()=>{let name=$('personName').value.trim(),role=$('personRole').value.trim();if(!name||!role)return alert('Preencha nome e função.');staff.push({id:Date.now(),name,role});$('personName').value='';$('personRole').value='';renderPeople();update();};
+function renderAvailability(){fill('availPerson');fillDays('availDay');$('availList').innerHTML=staff.map(p=>{let a=Object.entries(availability).filter(([k])=>k.endsWith('_'+p.id));return `<div class="person"><div><b>${esc(p.name)}</b><div class="muted">${a.length?a.map(([k,v])=>`Dia ${k.split('_')[0]}: ${v?'Disponível':'Indisponível'}`).join(' · '):'Nenhum registro'}</div></div></div>`}).join('')||'Sem colaboradores.';}
+$('saveAvail').onclick=()=>{availability[$('availDay').value+'_'+$('availPerson').value]=$('availStatus').value==='yes';renderAvailability();};
+function renderCalendar(){let n=days(),offset=new Date(+$('year').value,+$('month').value,1).getDay(),html=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'].map(x=>`<div class="weekday">${x}</div>`).join('');for(let i=0;i<offset;i++)html+='<div></div>';for(let d=1;d<=n;d++){let ids=schedule[d]||[];html+=`<button class="day ${selectedDay===d?'chosen':''}" data-day="${d}"><div class="daynum">${d}</div>${ids.map(id=>`<span class="tag">${esc(person(id)?.name||'')}</span>`).join('')}</button>`;}$('calendar').innerHTML=html;$('status').textContent=Object.keys(schedule).length?(published?'Publicada':'Rascunho · revisar'):'Ainda não gerada';$('nSlots').textContent=Object.values(schedule).reduce((n,a)=>n+a.length,0);$('nOpen').textContent=Object.keys(schedule).filter(d=>schedule[d].length<+$('required').value).length;}
+$('calendar').onclick=e=>{let b=e.target.closest('[data-day]');if(b)edit(+b.dataset.day);};
+function edit(d){selectedDay=d;$('editor').classList.remove('hidden');$('editTitle').textContent=`Editar dia ${d} de ${month()}`;$('checks').innerHTML=staff.map(p=>`<label style="display:flex;gap:8px;align-items:center;color:var(--text)"><input type="checkbox" data-id="${p.id}" style="width:auto" ${(schedule[d]||[]).includes(p.id)?'checked':''}>${esc(p.name)} — ${esc(p.role)}</label>`).join('');renderCalendar();}
+$('saveEdit').onclick=()=>{schedule[selectedDay]=[...$('checks').querySelectorAll(':checked')].map(x=>+x.dataset.id);published=false;renderCalendar();update();};
+$('generate').onclick=()=>{if(!staff.length)return alert('Cadastre colaboradores primeiro.');let count=Object.fromEntries(staff.map(p=>[p.id,0]));schedule={};published=false;for(let d=1;d<=days();d++){let eligible=staff.filter(p=>availability[d+'_'+p.id]!==false).sort((a,b)=>count[a.id]-count[b.id]||a.id-b.id);let chosen=eligible.slice(0,Math.min(staff.length,Math.max(1,+$('required').value)));schedule[d]=chosen.map(p=>p.id);chosen.forEach(p=>count[p.id]++);}selectedDay=null;$('editor').classList.add('hidden');$('publishMsg').textContent='Escala criada. Revise os dias e ajuste a distribuição antes de publicar.';renderCalendar();update();};
+$('publish').onclick=()=>{if(!Object.keys(schedule).length)return alert('Gere a escala primeiro.');published=true;renderCalendar();$('publishMsg').textContent='Escala publicada nesta demonstração.';update();};
+$('csv').onclick=()=>{if(!Object.keys(schedule).length)return alert('Gere uma escala primeiro.');let rows=[['Data','Turno','Colaborador','Função']];Object.keys(schedule).sort((a,b)=>a-b).forEach(d=>schedule[d].forEach(id=>rows.push([`${d}/${+ $('month').value+1}/${$('year').value}`,$('shiftType').value,person(id)?.name||'',person(id)?.role||''])));let csv='\ufeff'+rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(';')).join('\n');let a=document.createElement('a'),url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.href=url;a.download='plantao-facil-escala.csv';a.click();URL.revokeObjectURL(url);};
+function renderSwaps(){fill('swapFrom');fill('swapTo');fillDays('swapDay');$('swapList').innerHTML=swaps.map(s=>`<div class="person" style="display:block"><div class="row"><b>Dia ${s.day}: ${esc(person(s.from)?.name||'')} → ${esc(person(s.to)?.name||'')}</b><span class="pill">${s.status}</span></div>${s.status==='Pendente'?`<div class="actions"><button class="btn primary" data-approve="${s.id}">Aprovar</button><button class="btn" data-reject="${s.id}">Recusar</button></div>`:''}</div>`).join('')||'<p class="muted">Nenhuma solicitação.</p>';}
+$('requestSwap').onclick=()=>{let from=+$('swapFrom').value,to=+$('swapTo').value,day=+$('swapDay').value;if(from===to)return alert('Escolha pessoas diferentes.');swaps.unshift({id:Date.now(),from,to,day,status:'Pendente'});renderSwaps();update();};
+$('swapList').onclick=e=>{let a=e.target.closest('[data-approve]'),r=e.target.closest('[data-reject]'),id=+(a?.dataset.approve||r?.dataset.reject),s=swaps.find(x=>x.id===id);if(!s)return;if(a){if(!(schedule[s.day]||[]).includes(s.from))return alert('O solicitante não está escalado nesse dia.');if(availability[s.day+'_'+s.to]===false)return alert('A pessoa que receberá está indisponível nesse dia.');schedule[s.day]=schedule[s.day].map(x=>x===s.from?s.to:x);s.status='Aprovada';}else s.status='Recusada';published=false;renderSwaps();renderCalendar();update();};
+function update(){$('nStaff').textContent=staff.length;$('nSwap').textContent=swaps.filter(s=>s.status==='Pendente').length;$('summary').innerHTML=`<div>👥 ${staff.length} colaboradores cadastrados</div><div>📅 ${Object.keys(schedule).length?Object.keys(schedule).length+' dias com escala montada':'Nenhuma escala gerada ainda'}</div><div>🔁 ${swaps.filter(s=>s.status==='Pendente').length} solicitação(ões) de troca pendente(s)</div>`;}
+$('month').onchange=()=>{fillDays('availDay');fillDays('swapDay');schedule={};renderCalendar();};$('year').onchange=()=>{$('month').dispatchEvent(new Event('change'));};
+fillDays('availDay');fillDays('swapDay');renderPeople();renderAvailability();renderCalendar();renderSwaps();update();
+})();
+</script>
+</body>
+</html>
